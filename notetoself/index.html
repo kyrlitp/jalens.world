@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>nts</title>
+  <style>
+    body {
+      background: #fff;
+      color: #000;
+      font-family: "Times New Roman", Courier, monospace;
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 700px;
+      margin: 5vh auto;
+      padding: 2rem;
+      white-space: pre-wrap;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1em;
+      background: #0ff;
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
+    #output {
+      min-height: 5rem;
+    }
+    .hint {
+      color: #555;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<h1 style="color:#0ff;">time capsule: february 26, 2023</h1>
+<div id="output"></div><span class="cursor"></span>
+
+<div class="hint">(type <code>jalen</code> to go forward, <code>nelaj</code> to go back)</div>
+
+<script>
+  const text = `When I take an Uber over the brooklyn bridge, I still look out and for a second, I’m not 23. I’m that 15 year old kid from Oakland who decided one day music was what I was going to do, without knowing how to play an instrument well, never having gone to church, not having a community of music around me… and somehow I was just gonna make it happen with me and my laptop with one hinge already popping out and whirring like a lawn mower. Thanks for being on this journey with me.`.split(' ');
+
+  const output = document.getElementById('output');
+  let index = 0;
+  let buffer = '';
+
+  window.addEventListener('keydown', e => {
+    buffer += e.key.toLowerCase();
+    if (buffer.endsWith('jalen')) {
+      if (index < text.length) {
+        output.textContent += text[index] + ' ';
+        index++;
+      }
+      buffer = '';
+    } else if (buffer.endsWith('nelaj')) {
+      if (index > 0) {
+        index--;
+        const visibleWords = text.slice(0, index).join(' ') + ' ';
+        output.textContent = visibleWords;
+      }
+      buffer = '';
+    }
+    // keep buffer small
+    if (buffer.length > 10) buffer = buffer.slice(-10);
+  });
+</script>
+
+</body>
+</html>
