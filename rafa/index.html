@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>assata</title>
+  <style>
+    body {
+      background: #fff;
+      color: #000;
+      font-family: "Times New Roman", Courier, monospace;
+      font-size: 16px;
+      line-height: 1.8;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #click-instruct {
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 1rem;
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    #click-end {
+      text-align: center;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      position: fixed;
+      top: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    .stanza {
+      position: absolute;
+      opacity: 0;
+      transition: opacity 0.8s ease; /* smooth fade */
+      max-width: 40vw;
+      pointer-events: none;
+    }
+
+    .stanza.active {
+      opacity: 1;
+    }
+
+    .stanza.fadeout {
+      opacity: 0 !important;
+    }
+
+    #full-poem {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: pre-wrap;
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 2;
+      background: rgba(255,255,255,0.9);
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 80vw;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #111;
+        color: #f9f9f9;
+      }
+      #full-poem {
+        background: rgba(0,0,0,0.85);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="click-instruct">press R to continue</div>
+<div id="click-end">press 2 to end</div>
+
+<!-- Template stanzas -->
+<div class="stanza">Rest in power,</div>
+<div class="stanza">and peace,</div>
+<div class="stanza">finally,</div>
+<div class="stanza">at ease,</div>
+
+<!-- Full poem display -->
+<div id="full-poem">
+Rest in power,<br>
+and peace,<br>
+finally,<br>
+at ease,<br>
+<br>
+Assata Shakur
+</div>
+
+<script>
+  const baseStanzas = Array.from(document.querySelectorAll(".stanza"));
+  const sequence = ["r","a","f","a"]; // keys for looping
+  let seqIndex = 0;
+  let ended = false;
+
+  const instruct = document.getElementById("click-instruct");
+  const endText = document.getElementById("click-end");
+  const fullPoem = document.getElementById("full-poem");
+
+  function randomPosition(el) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const elWidth = el.offsetWidth || 200;
+    const elHeight = el.offsetHeight || 30;
+    const left = Math.random() * (vw - elWidth);
+    const top = Math.random() * (vh - elHeight);
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+  }
+
+  function revealStanza(index) {
+    const clone = baseStanzas[index].cloneNode(true);
+    clone.classList.add("active");
+    document.body.appendChild(clone);
+    randomPosition(clone);
+  }
+
+  function fadeOutAll() {
+    const allStanzas = document.querySelectorAll(".stanza.active");
+    allStanzas.forEach(st => {
+      st.classList.add("fadeout");
+      setTimeout(() => st.remove(), 1000); // remove after fade
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (ended) return; // stop everything once ended
+
+    const key = e.key.toLowerCase();
+
+    // handle RAF(A) loop
+    if (key === sequence[seqIndex]) {
+      revealStanza(seqIndex);
+      seqIndex = (seqIndex + 1) % sequence.length;
+      instruct.textContent = `press ${sequence[seqIndex].toUpperCase()} to continue`;
+    }
+
+    // handle final reveal on "2"
+    if (key === "2") {
+      fadeOutAll(); // fade away scattered stanzas
+      fullPoem.style.display = "block"; // show centered clean poem
+      instruct.textContent = "— end —";
+      endText.style.display = "none";
+      ended = true;
+    }
+  });
+</script>
+
+</body>
+</html>
