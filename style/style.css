@@ -1,0 +1,72 @@
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Times New Roman', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.word {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.letter-container {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  height: 100px;
+  width: 70px;
+  text-align: center;
+  overflow: visible;
+}
+
+.letter {
+  font-size: 3rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  position: relative;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  width: 1ch;
+  word-break: break-all;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.subtitle span {
+  display: block;
+  width: 1ch;
+}
+
+
+/* Hover effect */
+.letter-container:hover .letter {
+  transform: translateY(-30px);
+  opacity: 0;
+}
+
+.letter-container:hover .subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Expanded state for touch/JS toggle */
+.expanded .letter {
+  transform: translateY(-30px);
+  opacity: 0;
+}
+.expanded .subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
